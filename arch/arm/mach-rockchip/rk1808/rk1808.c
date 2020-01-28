@@ -91,6 +91,36 @@ void board_debug_uart_init(void)
 		     GPIO4A2_UART2_TX_M0 << GPIO4A2_SHIFT |
 		     GPIO4A3_UART2_RX_M0 << GPIO4A3_SHIFT);
 #endif
+
+/*
+ *	Fix : if using uart0 to debug
+ */
+#if defined(CONFIG_DEBUG_UART_BASE) && (CONFIG_DEBUG_UART_BASE == 0xff430000)
+#pragma message ( "RK1808 Using Debug UART0" )
+#define PMU_GRF_BASE 0xFE020000
+
+	struct rk1808_pmugrf * const pmu_grf = 
+			(struct rk1808_pmugrf * const)PMU_GRF_BASE;
+
+	enum {
+			GPIO0B3_SHIFT	= 6,
+			GPIO0B3_MASK	= GENMASK(7, 6),
+			GPIO0B3_GPIO	= 1,
+			GPIO0B3_SIN		= (GPIO0B3_GPIO << GPIO0B3_SHIFT),
+
+			GPIO0B2_SHIFT	= 4,
+			GPIO0B2_MASK	= GENMASK(5, 4),
+			GPIO0B2_GPIO	= 1,
+			GPIO0B2_SOUT	= (GPIO0B2_GPIO << GPIO0B2_SHIFT),
+	};
+
+	rk_clrsetreg(&pmu_grf->gpio0bl_iomux,
+			GPIO0B3_MASK, GPIO0B3_SIN);
+	rk_clrsetreg(&pmu_grf->gpio0bl_iomux,
+			GPIO0B2_MASK, GPIO0B2_SOUT);
+
+#endif	
+
 }
 
 #if !defined(CONFIG_SPL_BUILD) && !defined(CONFIG_COPROCESSOR_RK1808)
