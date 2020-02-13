@@ -192,7 +192,7 @@ CONFIG_PSCI_RESET=y
 #
 # ARM debug
 #
-CONFIG_DEFAULT_DEVICE_TREE="rk1808-aikit"
+CONFIG_DEFAULT_DEVICE_TREE="arch/arm/dts/infoworks-rk1808-aikit"
 CONFIG_DEBUG_UART=y
 # CONFIG_AHCI is not set
 
